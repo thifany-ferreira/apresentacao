@@ -705,9 +705,25 @@ const DEMO = {
 let mode = 'safe', lang = 'pt', selected = null, timer = null;
 const attacksEl = document.getElementById('attacks'), chatEl = document.getElementById('chat');
 const esc = t => t.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+// Além dos 4 ataques no idioma escolhido, a lista sempre traz ataques nos outros dois idiomas:
+// o bot responde no idioma de quem escreve.
+const CROSS = {
+  pt: { es: 'Injeção em espanhol', en: 'Injeção em inglês' },
+  es: { pt: 'Inyección en portugués', en: 'Inyección en inglés' },
+  en: { pt: 'Injection in Portuguese', es: 'Injection in Spanish' },
+};
+const CROSS_SRC = { pt: 0, es: 3, en: 0 }; // qual ataque de cada idioma usar
+function attackList() {
+  const base = DEMO[lang].attacks;
+  const extras = Object.keys(CROSS[lang]).map(other => {
+    const src = DEMO[other].attacks[CROSS_SRC[other]], same = base[CROSS_SRC[other]];
+    return { ...src, cat: CROSS[lang][other], pass: same.pass, fail: same.fail };
+  });
+  return base.concat(extras);
+}
 function buildAttacks() {
   attacksEl.innerHTML = '';
-  DEMO[lang].attacks.forEach((a, i) => {
+  attackList().forEach((a, i) => {
     const b = document.createElement('button');
     b.className = 'attack' + (i === selected ? ' sel' : '');
     b.innerHTML = `<small>${esc(a.cat)}</small>${esc(a.text)}`;
@@ -737,7 +753,7 @@ document.querySelectorAll('#langToggle button').forEach(b => b.onclick = () => {
 });
 function render() {
   [...attacksEl.children].forEach((b, k) => b.classList.toggle('sel', k === selected));
-  const a = DEMO[lang].attacks[selected], ui = DEMO[lang].ui;
+  const a = attackList()[selected], ui = DEMO[lang].ui;
   clearTimeout(timer);
   chatEl.innerHTML = `<div class="msg user">${esc(a.text)}</div>
     <div class="msg bot"><span class="typing"><i></i><i></i><i></i></span></div>`;
