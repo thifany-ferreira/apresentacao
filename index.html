@@ -152,6 +152,32 @@
   .cls.ign { background: rgba(255,255,255,.08); color: var(--muted); }
   .hint { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-top: 10px; }
 
+
+  /* API demo */
+  .scen { display: flex; flex-direction: column; gap: 8px; }
+  .scen button {
+    display: flex; align-items: center; gap: 10px; text-align: left; cursor: pointer;
+    font: 500 14px 'Inter', sans-serif; color: var(--text);
+    padding: 11px 14px; border-radius: 12px; border: 1px solid var(--line); background: rgba(255,255,255,.03);
+    transition: border-color .2s, background .2s;
+  }
+  .scen button:hover, .scen button.sel { border-color: var(--cyan); background: rgba(62,230,214,.08); }
+  .verb { font-family: var(--mono); font-size: 11px; font-weight: 600; padding: 3px 7px; border-radius: 6px; min-width: 54px; text-align: center; }
+  .verb.POST { background: rgba(52,211,153,.15); color: var(--green); }
+  .verb.GET { background: rgba(62,170,255,.15); color: #60a5fa; }
+  .verb.DELETE { background: rgba(248,113,113,.15); color: var(--red); }
+  .code {
+    font-family: var(--mono); font-size: 12.5px; line-height: 1.6; white-space: pre-wrap; word-break: break-word;
+    background: rgba(0,0,0,.35); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; margin-top: 10px;
+  }
+  .code .k { color: var(--violet); } .code .s { color: var(--cyan); }
+  .status { display: inline-block; font-family: var(--mono); font-weight: 600; padding: 2px 8px; border-radius: 6px; }
+  .status.s2 { background: rgba(52,211,153,.15); color: var(--green); }
+  .status.s4 { background: rgba(251,191,36,.15); color: var(--yellow); }
+  .asserts { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+  .asserts div { font-family: var(--mono); font-size: 12.5px; color: var(--green); animation: pop .35s ease both; }
+  .asserts div.warn { color: var(--yellow); }
+
   /* Chrome */
   .topbar {
     position: fixed; top: 0; left: 0; right: 0; z-index: 3;
@@ -194,7 +220,7 @@
 
 <div class="topbar">
   <span><b>Thifany Ferreira</b> · QA Engineer</span>
-  <span id="counter">01 / 06</span>
+  <span id="counter">01 / 07</span>
 </div>
 
 <main class="deck" id="deck">
@@ -208,7 +234,7 @@
       <div class="tags">
         <span class="tag">Ruby</span><span class="tag">Capybara</span><span class="tag">Selenium</span>
         <span class="tag">Playwright</span><span class="tag">TypeScript</span><span class="tag">Python</span>
-        <span class="tag">pytest</span><span class="tag">GitHub Actions</span><span class="tag">Claude</span>
+        <span class="tag">pytest</span><span class="tag">Java</span><span class="tag">RestAssured</span><span class="tag">GitHub Actions</span><span class="tag">Claude</span>
       </div>
       <div class="row" style="margin-top:40px">
         <button class="btn primary" onclick="go(1)">Começar →</button>
@@ -303,7 +329,37 @@
     </div>
   </section>
 
-  <!-- 5. Stack -->
+  <!-- 5. Projeto 3 -->
+  <section class="slide">
+    <div class="wrap">
+      <div class="eyebrow">// projeto 03 · java + restassured + junit 5</div>
+      <h2>Testes de <span class="grad">API REST</span></h2>
+      <p class="lead" style="font-size:18px">30 testes contra uma API de loja virtual: cadastro, login com token e produtos com controle de acesso. No CI, uma instância isolada da API sobe só para os testes.</p>
+      <div class="grid g2" style="margin-top:22px; align-items:start">
+        <div>
+          <div class="grid g2">
+            <div class="card stat"><div class="num grad">30</div><div class="lbl">testes automatizados</div></div>
+            <div class="card stat"><div class="num grad">4</div><div class="lbl">contratos validados por JSON Schema</div></div>
+          </div>
+          <div class="card" style="margin-top:16px">
+            <h3>🔐 Autorização</h3>
+            <p class="muted">Sem token, token falso e usuário comum tentando ação de administrador: 401 e 403 conferidos.</p>
+          </div>
+          <div class="card" style="margin-top:16px">
+            <h3>🔎 Olhar crítico</h3>
+            <p class="muted">3 comportamentos inconsistentes da API documentados. Exemplo: excluir um id que não existe responde 200, e não 404.</p>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Escolha uma requisição</h3>
+          <div class="scen" id="scen"></div>
+          <div id="apiOut"><p class="muted" style="font-size:14px; margin-top:12px">Clique num cenário para ver a requisição, a resposta e o que o teste confere.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Stack -->
   <section class="slide">
     <div class="wrap">
       <div class="eyebrow">// ferramentas</div>
@@ -311,7 +367,7 @@
       <div class="grid g3" style="margin-top:28px">
         <div class="card">
           <div class="icon">🧪</div><h3>Automação de testes</h3>
-          <div class="tags" style="margin-top:12px"><span class="tag">Selenium</span><span class="tag">Capybara</span><span class="tag">Cucumber (BDD)</span><span class="tag">Playwright</span><span class="tag">pytest</span><span class="tag">Page Object Model</span></div>
+          <div class="tags" style="margin-top:12px"><span class="tag">Selenium</span><span class="tag">Capybara</span><span class="tag">Cucumber (BDD)</span><span class="tag">Playwright</span><span class="tag">pytest</span><span class="tag">JUnit 5</span><span class="tag">Page Object Model</span></div>
         </div>
         <div class="card">
           <div class="icon">💻</div><h3>Linguagens</h3>
@@ -323,7 +379,7 @@
         </div>
         <div class="card">
           <div class="icon">🔌</div><h3>APIs</h3>
-          <div class="tags" style="margin-top:12px"><span class="tag">REST</span><span class="tag">Postman</span><span class="tag">Swagger / OpenAPI</span></div>
+          <div class="tags" style="margin-top:12px"><span class="tag">REST</span><span class="tag">RestAssured</span><span class="tag">JSON Schema</span><span class="tag">Postman</span><span class="tag">Swagger / OpenAPI</span></div>
         </div>
         <div class="card">
           <div class="icon">🛠️</div><h3>Ferramentas</h3>
@@ -337,15 +393,16 @@
     </div>
   </section>
 
-  <!-- 6. Contato -->
+  <!-- 7. Contato -->
   <section class="slide">
     <div class="wrap" style="text-align:center">
       <div class="eyebrow">// vamos conversar</div>
       <h1 style="font-size:clamp(40px,7vw,80px)">Obrigada! <span class="grad">✦</span></h1>
-      <p class="lead" style="margin:22px auto 0">Os dois projetos são abertos, com código, testes e CI rodando no GitHub.</p>
+      <p class="lead" style="margin:22px auto 0">Os três projetos são abertos, com código, testes e CI rodando no GitHub.</p>
       <div class="row" style="justify-content:center; margin-top:36px">
         <a class="btn primary" href="https://github.com/thifany-ferreira/llm-chatbot-security-tests" target="_blank" rel="noopener">🤖 llm-chatbot-security-tests</a>
         <a class="btn primary" href="https://github.com/thifany-ferreira/qa-health-monitor" target="_blank" rel="noopener">🚦 qa-health-monitor</a>
+        <a class="btn primary" href="https://github.com/thifany-ferreira/serverest-api-tests" target="_blank" rel="noopener">🔌 serverest-api-tests</a>
       </div>
       <div class="row" style="justify-content:center; margin-top:14px">
         <a class="btn" href="https://www.linkedin.com/in/thifanyferreira" target="_blank" rel="noopener">LinkedIn</a>
@@ -552,6 +609,45 @@ function renderMonitor() {
 }
 range.oninput = renderMonitor;
 renderMonitor();
+
+/* ---------- Demo 3: API (respostas reais do ServeRest, dados fictícios) ---------- */
+const SCEN = [
+  { verb: 'POST', path: '/usuarios', label: 'Cadastrar usuário válido',
+    req: '{ "nome": "Ana Souza", "email": "qa.7f3a9c@teste.com",\n  "password": "teste123", "administrador": "false" }',
+    status: 201, res: '{ "message": "Cadastro realizado com sucesso",\n  "_id": "iHWg2bbQA3xKsOqg" }',
+    checks: ['statusCode(201)', 'message = "Cadastro realizado com sucesso"', '_id não é nulo', 'resposta em menos de 5000 ms'] },
+  { verb: 'POST', path: '/usuarios', label: 'E-mail que já está em uso',
+    req: '{ "nome": "Ana Souza", "email": "qa.7f3a9c@teste.com",\n  "password": "teste123", "administrador": "false" }',
+    status: 400, res: '{ "message": "Este email já está sendo usado" }',
+    checks: ['statusCode(400)', 'message = "Este email já está sendo usado"'] },
+  { verb: 'POST', path: '/produtos', label: 'Usuário comum tenta cadastrar produto',
+    req: 'Authorization: Bearer eyJhbGciOi... (usuário comum)\n{ "nome": "Mouse QA", "preco": 100, ... }',
+    status: 403, res: '{ "message": "Rota exclusiva para administradores" }',
+    checks: ['statusCode(403)', 'message = "Rota exclusiva para administradores"'] },
+  { verb: 'GET', path: '/usuarios/{id}', label: 'Contrato do usuário (JSON Schema)',
+    req: 'GET /usuarios/iHWg2bbQA3xKsOqg',
+    status: 200, res: '{ "nome": "Ana Souza", "email": "qa.7f3a9c@teste.com",\n  "password": "teste123", "administrador": "false",\n  "_id": "iHWg2bbQA3xKsOqg" }',
+    checks: ['statusCode(200)', 'todos os campos obrigatórios presentes', 'administrador é "true" ou "false"', '_id com 16 caracteres alfanuméricos'] },
+  { verb: 'DELETE', path: '/usuarios/{id}', label: 'Excluir id que não existe',
+    req: 'DELETE /usuarios/0000000000000000',
+    status: 200, res: '{ "message": "Nenhum registro excluído" }',
+    checks: ['statusCode(200), comportamento atual da API'], warn: 'Pergunta para o time: o esperado em REST seria 404 Not Found' },
+];
+const scenEl = document.getElementById('scen'), apiOut = document.getElementById('apiOut');
+SCEN.forEach((c, i) => {
+  const b = document.createElement('button');
+  b.innerHTML = `<span class="verb ${c.verb}">${c.verb}</span><span>${c.label}</span>`;
+  b.onclick = () => {
+    [...scenEl.children].forEach((x, k) => x.classList.toggle('sel', k === i));
+    const cls = c.status < 300 ? 's2' : 's4';
+    apiOut.innerHTML = `
+      <div class="code"><span class="k">${c.verb}</span> <span class="s">${c.path}</span>\n${c.req}</div>
+      <div class="code">Resposta <span class="status ${cls}">${c.status}</span>\n${c.res}</div>
+      <div class="asserts">${c.checks.map((t, k) => `<div style="animation-delay:${k * 120}ms">✓ ${t}</div>`).join('')}
+      ${c.warn ? `<div class="warn" style="animation-delay:${c.checks.length * 120}ms">⚠ ${c.warn}</div>` : ''}</div>`;
+  };
+  scenEl.appendChild(b);
+});
 </script>
 </body>
 </html>
