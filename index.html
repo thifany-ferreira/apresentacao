@@ -280,7 +280,6 @@
     <div class="wrap">
       <div data-i18n="c_eyebrow" class="eyebrow">// portfólio · QA + IA</div>
       <h1>Thifany<br><span class="grad">Ferreira</span></h1>
-      <div class="term" aria-hidden="true"><span class="p">$</span><span class="cmd">whoami</span><span class="out" id="typed"></span><span class="caret"></span></div>
       <p data-i18n="c_lead" class="lead" style="margin-top:24px">QA Engineer focada em <b style="color:var(--text)">automação de testes</b> e em <b style="color:var(--text)">qualidade e segurança de sistemas com IA</b>.</p>
       <div class="tags">
         <span class="tag">Ruby</span><span class="tag">Capybara</span><span class="tag">Selenium</span>
@@ -1187,7 +1186,7 @@ if (startLang && startLang !== 'pt') setSiteLang(startLang);
 /* digitação do terminal da capa */
 (function () {
   var el = document.getElementById('typed'); if (!el) return;
-  var lines = ['qa-engineer --ai --security', 'testes que pegam o que a tela esconde'];
+  var lines = ['qa-engineer --ai --security', 'testes que pegam o que a tela esconde', 'criadora da dark'];
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) { el.textContent = lines[0]; return; }
   var li = 0, ci = 0, del = false;
   (function tick() {
