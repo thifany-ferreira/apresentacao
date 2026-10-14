@@ -1187,7 +1187,7 @@ if (startLang && startLang !== 'pt') setSiteLang(startLang);
 /* digitação do terminal da capa */
 (function () {
   var el = document.getElementById('typed'); if (!el) return;
-  var lines = ['qa-engineer --ai --security', 'testes que pegam o que a tela esconde', 'criadora da dark'];
+  var lines = ['qa-engineer --ai --security', 'testes que pegam o que a tela esconde'];
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) { el.textContent = lines[0]; return; }
   var li = 0, ci = 0, del = false;
   (function tick() {
