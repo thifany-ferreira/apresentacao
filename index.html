@@ -259,6 +259,39 @@
   .topbar .live { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--green);
     box-shadow: 0 0 10px var(--green); margin-right: 9px; vertical-align: 1px; animation: blink 2s ease-in-out infinite; }
   @media (prefers-reduced-motion: reduce) { .scan, .grad, .caret, .topbar .live { animation: none; } }
+
+  /* capa em duas colunas com painel de CI */
+  .hero { display: grid; grid-template-columns: minmax(0, 1fr); gap: 48px; align-items: center; }
+  .ci { display: none; }
+  @media (min-width: 1180px) {
+    .hero { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); }
+    .ci { display: block; border: 1px solid var(--line); border-radius: 16px; overflow: hidden;
+      background: rgba(7,10,20,.72); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 30px 80px -30px rgba(139,123,255,.35), 0 0 0 1px rgba(62,230,214,.06);
+      transform: perspective(1200px) rotateY(-6deg); }
+    .slide:first-child h1 { font-size: clamp(56px, 6.6vw, 88px); }
+    .slide:first-child .wrap { max-width: 1240px; }
+  }
+  .ci-bar { display: flex; align-items: center; gap: 7px; padding: 11px 14px; border-bottom: 1px solid var(--line);
+    font-family: var(--mono); font-size: 12px; color: var(--muted); background: rgba(255,255,255,.02); }
+  .ci-bar i { width: 10px; height: 10px; border-radius: 50%; background: #f87171; }
+  .ci-bar i:nth-child(2) { background: #fbbf24; } .ci-bar i:nth-child(3) { background: #34d399; }
+  .ci-bar span { margin-left: 8px; }
+  .ci-body { padding: 18px 18px 20px; font-family: var(--mono); font-size: 13.5px; line-height: 2; color: var(--muted); }
+  .ci-body .ln { white-space: nowrap; opacity: 0; transform: translateY(4px); animation: ln .35s ease forwards; }
+  .ci-body .ln b { color: var(--text); font-weight: 400; float: right; }
+  .ci-body .p, .ci-body .ok { color: var(--green); } .ci-body .ok { margin-right: 6px; }
+  .ci-body .sep { color: rgba(140,160,255,.3); }
+  .ci-body .ln:nth-child(1) { animation-delay: 0.40s; }
+  .ci-body .ln:nth-child(2) { animation-delay: 0.75s; }
+  .ci-body .ln:nth-child(3) { animation-delay: 1.10s; }
+  .ci-body .ln:nth-child(4) { animation-delay: 1.45s; }
+  .ci-body .ln:nth-child(5) { animation-delay: 1.80s; }
+  .ci-body .ln:nth-child(6) { animation-delay: 2.15s; }
+  .ci-body .ln:nth-child(7) { animation-delay: 2.50s; }
+  .ci-body .ln:nth-child(8) { animation-delay: 2.85s; }
+  @keyframes ln { to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .ci-body .ln { animation: none; opacity: 1; transform: none; } }
 </style>
 </head>
 <body>
@@ -278,6 +311,8 @@
   <!-- 1. Capa -->
   <section class="slide">
     <div class="wrap">
+      <div class="hero">
+        <div class="hero-l">
       <div data-i18n="c_eyebrow" class="eyebrow">// portfólio · QA + IA</div>
       <h1>Thifany<br><span class="grad">Ferreira</span></h1>
       <p data-i18n="c_lead" class="lead" style="margin-top:24px">QA Engineer focada em <b style="color:var(--text)">automação de testes</b> e em <b style="color:var(--text)">qualidade e segurança de sistemas com IA</b>.</p>
@@ -294,6 +329,22 @@
       <div class="row" style="margin-top:28px">
         <button data-i18n="c_start" class="btn primary" onclick="go(1)">Começar →</button>
         <span data-i18n="c_hint" class="muted" style="font-size:13px">Use as setas do teclado ou deslize na tela</span>
+      </div>
+    
+        </div>
+      <aside class="ci" aria-hidden="true">
+        <div class="ci-bar"><i></i><i></i><i></i><span>~/portfolio — ci</span></div>
+        <div class="ci-body">
+          <div class="ln"><span class="p">$</span> pytest --all-projects</div>
+          <div class="ln"><span class="ok">✓</span> llm-chatbot-security-tests <b>63 passed</b></div>
+          <div class="ln"><span class="ok">✓</span> llm-answer-quality-evals <b>29 casos</b></div>
+          <div class="ln"><span class="ok">✓</span> serverest-api-tests <b>30 passed</b></div>
+          <div class="ln"><span class="ok">✓</span> sql-data-quality-tests <b>26 passed</b></div>
+          <div class="ln"><span class="ok">✓</span> dark-ai-agent <b>97 passed</b></div>
+          <div class="ln sep">──────────────────────────────</div>
+          <div class="ln"><span class="ok">●</span> all checks passed <span class="caret"></span></div>
+        </div>
+      </aside>
       </div>
     </div>
   </section>
