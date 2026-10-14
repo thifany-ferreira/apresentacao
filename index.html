@@ -231,15 +231,45 @@
   @media (prefers-reduced-motion: reduce) {
     .slide { transition: opacity .2s; transform: none; }
   }
+
+  /* ===== camada tecnológica ===== */
+  .grid-bg { position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image: linear-gradient(rgba(140,160,255,.07) 1px, transparent 1px), linear-gradient(90deg, rgba(140,160,255,.07) 1px, transparent 1px);
+    background-size: 56px 56px;
+    -webkit-mask-image: radial-gradient(ellipse 75% 65% at 50% 45%, #000 30%, transparent 100%);
+            mask-image: radial-gradient(ellipse 75% 65% at 50% 45%, #000 30%, transparent 100%); }
+  .scan { position: fixed; left: 0; right: 0; top: -20%; height: 18%; z-index: 0; pointer-events: none;
+    background: linear-gradient(180deg, transparent, rgba(62,230,214,.05), transparent); animation: scan 9s linear infinite; }
+  @keyframes scan { to { top: 110%; } }
+  .card { position: relative; transition: border-color .25s, box-shadow .25s, transform .25s; }
+  .card::before, .card::after { content: ""; position: absolute; width: 14px; height: 14px; pointer-events: none;
+    border-color: var(--cyan); border-style: solid; opacity: .45; transition: opacity .25s, width .25s, height .25s; }
+  .card::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; border-top-left-radius: 18px; }
+  .card::after { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; border-bottom-right-radius: 18px; border-color: var(--violet); }
+  .card:hover { border-color: rgba(62,230,214,.35); box-shadow: 0 0 0 1px rgba(62,230,214,.08), 0 10px 40px -12px rgba(62,230,214,.25); }
+  .card:hover::before, .card:hover::after { opacity: 1; width: 26px; height: 26px; }
+  .grad { background-size: 200% 100%; animation: shimmer 6s ease-in-out infinite; }
+  @keyframes shimmer { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+  .term { font-family: var(--mono); font-size: clamp(14px, 1.6vw, 17px); color: var(--muted); margin-top: 22px;
+    display: inline-flex; flex-wrap: wrap; max-width: 100%; min-width: min(100%, 520px); align-items: center; gap: 4px 10px; padding: 8px 14px; border-radius: 10px;
+    border: 1px solid var(--line); background: rgba(7,10,20,.55); }
+  .term .p { color: var(--green); } .term .cmd { color: var(--text); } .term .out { color: var(--cyan); }
+  .caret { display: inline-block; width: 9px; height: 1.1em; background: var(--cyan); margin-left: 2px; animation: caret 1s steps(1) infinite; vertical-align: -2px; }
+  @keyframes caret { 50% { opacity: 0; } }
+  .topbar .live { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--green);
+    box-shadow: 0 0 10px var(--green); margin-right: 9px; vertical-align: 1px; animation: blink 2s ease-in-out infinite; }
+  @media (prefers-reduced-motion: reduce) { .scan, .grad, .caret, .topbar .live { animation: none; } }
 </style>
 </head>
 <body>
 <canvas id="bg"></canvas>
 <div class="glow"></div>
+<div class="grid-bg"></div>
+<div class="scan"></div>
 <div class="progress" id="progress"></div>
 
 <div class="topbar">
-  <span><b>Thifany Ferreira</b><span class="role"> · QA Engineer</span></span>
+  <span><i class="live"></i><b>Thifany Ferreira</b><span class="role"> · QA Engineer</span></span>
   <span class="right"><span class="langsw" id="siteLang" aria-label="Idioma"><button data-l="pt" class="on">PT</button><button data-l="en">EN</button><button data-l="es">ES</button></span><span id="counter">01 / 09</span></span>
 </div>
 
@@ -250,6 +280,7 @@
     <div class="wrap">
       <div data-i18n="c_eyebrow" class="eyebrow">// portfólio · QA + IA</div>
       <h1>Thifany<br><span class="grad">Ferreira</span></h1>
+      <div class="term" aria-hidden="true"><span class="p">$</span><span class="cmd">whoami</span><span class="out" id="typed"></span><span class="caret"></span></div>
       <p data-i18n="c_lead" class="lead" style="margin-top:24px">QA Engineer focada em <b style="color:var(--text)">automação de testes</b> e em <b style="color:var(--text)">qualidade e segurança de sistemas com IA</b>.</p>
       <div class="tags">
         <span class="tag">Ruby</span><span class="tag">Capybara</span><span class="tag">Selenium</span>
@@ -1150,6 +1181,23 @@ if (startLang && startLang !== 'pt') setSiteLang(startLang);
   }
   var on = true; draw(on);
   setInterval(function () { on = !on; draw(on); }, 600);
+})();
+</script>
+<script>
+/* digitação do terminal da capa */
+(function () {
+  var el = document.getElementById('typed'); if (!el) return;
+  var lines = ['qa-engineer --ai --security', 'testes que pegam o que a tela esconde', 'criadora da dark'];
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) { el.textContent = lines[0]; return; }
+  var li = 0, ci = 0, del = false;
+  (function tick() {
+    var t = lines[li];
+    el.textContent = t.slice(0, ci);
+    if (!del && ci < t.length) { ci++; setTimeout(tick, 55); }
+    else if (!del) { del = true; setTimeout(tick, 2200); }
+    else if (ci > 0) { ci--; setTimeout(tick, 25); }
+    else { del = false; li = (li + 1) % lines.length; setTimeout(tick, 400); }
+  })();
 })();
 </script>
 </body>
