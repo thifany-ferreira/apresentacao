@@ -304,6 +304,27 @@
   .lb-tip { display: none; font-family: var(--mono); font-size: 12px; color: var(--muted); text-align: center; }
   @media (orientation: portrait) and (max-width: 700px) { .lb-tip { display: block; } }
   .lb .x { position: absolute; top: 14px; right: 18px; font: 600 26px Inter, sans-serif; color: var(--text); background: none; border: 0; cursor: pointer; }
+
+  /* Dark · terminal neural */
+  .dterm{position:relative;border:1px solid rgba(139,123,255,.45);background:#05040acc;font-family:var(--mono);padding:12px 14px;display:flex;flex-direction:column;gap:10px;overflow:hidden}
+  .dterm::before{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(transparent 0 2px,rgba(0,0,0,.3) 3px);z-index:2}
+  .dterm::after{content:"";position:absolute;left:0;right:0;height:90px;top:-90px;pointer-events:none;background:linear-gradient(transparent,rgba(139,123,255,.1),transparent);animation:dtsw 6s linear infinite;z-index:1}
+  @keyframes dtsw{to{top:100%}}
+  .dt-hdr{display:flex;gap:16px;align-items:center;font-size:10.5px;letter-spacing:.14em;color:var(--muted);border-bottom:1px dashed rgba(139,123,255,.3);padding-bottom:10px;text-transform:uppercase}
+  .dt-hdr b{color:var(--text);letter-spacing:.38em;font-size:12px;text-shadow:0 0 10px var(--violet)}
+  .dt-hdr .st{margin-left:auto;color:#c4b5fd}.dt-hdr .st::before{content:"■ ";color:var(--green)}
+  .dt-body{display:grid;grid-template-columns:1fr 1.25fr;gap:12px;align-items:center;min-height:150px}
+  .dt-core{margin:0;font-size:5.3px;line-height:1;color:#a78bfa;text-shadow:0 0 7px #8b5cf6;white-space:pre;text-align:center;transition:color .4s,text-shadow .4s}
+  .dterm.found .dt-core{color:#ff4d6a;text-shadow:0 0 8px #c8102e}
+  .dt-log{font-size:11px;line-height:1.75;color:var(--muted);display:flex;flex-direction:column;justify-content:flex-end;height:150px;overflow:hidden}
+  .dt-log div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;animation:dtin .25s both}
+  @keyframes dtin{from{opacity:0;transform:translateX(-6px)}}
+  .dt-log .ok{color:var(--green)}.dt-log .er{color:#ff4d6a}.dt-log .dk{color:#c4b5fd}
+  .dt-io{font-size:12px;line-height:1.65;border-top:1px dashed rgba(139,123,255,.3);padding-top:10px;min-height:62px;color:var(--text)}
+  .dt-io .p{color:#a78bfa}
+  .dt-cur{display:inline-block;width:7px;height:13px;background:#a78bfa;vertical-align:-2px;box-shadow:0 0 8px #8b5cf6;animation:dtbl 1s steps(1) infinite}
+  @keyframes dtbl{50%{opacity:0}}
+  @media (max-width:700px){.dt-body{grid-template-columns:1fr}.dt-log{height:150px}.dt-core{font-size:5.4px}}
 </style>
 </head>
 <body>
@@ -368,9 +389,10 @@
       <h2 data-i18n="d_h2">Dark: <span class="grad">QA e segurança com IA</span> para empresas</h2>
       <p data-i18n="d_lead" class="lead" style="font-size:18px">Um agente de IA que encontra falhas antes do cliente, explica o risco e <b style="color:var(--text)">entrega os testes automatizados</b> para que elas não voltem.</p>
       <div class="grid g2" style="margin-top:22px; align-items:start">
-        <div class="card" style="padding:10px">
-          <video poster="assets/dark-demo-poster.jpg" class="zoomable" data-lightbox autoplay muted loop playsinline preload="metadata" aria-label="Demonstração da Dark analisando uma falha e construindo um teste automatizado" style="width:100%; display:block; border-radius:10px; aspect-ratio:840/472; background:#07060d"><source src="assets/dark-demo.mp4" type="video/mp4"><source src="assets/dark-demo.webm" type="video/webm"></video>
-          <div class="zoom-hint">⤢ <span data-i18n="d_zoom">toque para ampliar</span></div>
+        <div class="dterm" id="dterm" aria-label="Simulação da Dark no terminal neural">
+          <div class="dt-hdr"><b>D·A·R·K</b><span>QA + SEC</span><span class="st" id="dtState">online</span></div>
+          <div class="dt-body"><pre class="dt-core" id="dtCore" aria-hidden="true"></pre><div class="dt-log" id="dtLog"></div></div>
+          <div class="dt-io" id="dtIo"></div>
         </div>
         <div>
           <div class="grid g2">
@@ -1283,6 +1305,72 @@ if (startLang && startLang !== 'pt') setSiteLang(startLang);
   });
   lb.addEventListener('click', close);
   addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); }, true);
+})();
+</script>
+<script>
+/* Dark · terminal neural (demonstração ao vivo) */
+(() => {
+  const el = document.getElementById('dterm'); if (!el) return;
+  const core = document.getElementById('dtCore'), log = document.getElementById('dtLog'), io = document.getElementById('dtIo'), stEl = document.getElementById('dtState');
+  const S = {
+    pt: {u:'Testa o checkout da loja e me diz o que quebrou.', st:{idle:'online', think:'pensando', speak:'respondendo', found:'falha encontrada'},
+      steps:[['','abrindo /checkout'],['dk','3 fluxos mapeados: cartão, boleto, Pix'],['ok','cartão ....... OK (412 ms)'],['ok','boleto ....... OK (388 ms)'],['er','Pix .......... FALHA: HTTP 500'],['dk','causa: QR code gerado sem valor'],['dk','gerando checkout_pix.spec.ts'],['ok','teste criado e adicionado ao CI']],
+      a:'1 falha crítica: o Pix retorna 500 porque o QR code é gerado sem valor. Já criei o teste checkout_pix.spec.ts para isso não voltar.'},
+    en: {u:'Test the store checkout and tell me what broke.', st:{idle:'online', think:'thinking', speak:'answering', found:'failure found'},
+      steps:[['','opening /checkout'],['dk','3 flows mapped: card, boleto, Pix'],['ok','card ......... OK (412 ms)'],['ok','boleto ....... OK (388 ms)'],['er','Pix .......... FAIL: HTTP 500'],['dk','cause: QR code generated without amount'],['dk','generating checkout_pix.spec.ts'],['ok','test created and added to CI']],
+      a:'1 critical failure: Pix returns 500 because the QR code has no amount. I already wrote checkout_pix.spec.ts so it never comes back.'},
+    es: {u:'Prueba el checkout de la tienda y dime qué se rompió.', st:{idle:'online', think:'pensando', speak:'respondiendo', found:'falla encontrada'},
+      steps:[['','abriendo /checkout'],['dk','3 flujos mapeados: tarjeta, boleto, Pix'],['ok','tarjeta ...... OK (412 ms)'],['ok','boleto ....... OK (388 ms)'],['er','Pix .......... FALLA: HTTP 500'],['dk','causa: QR generado sin valor'],['dk','generando checkout_pix.spec.ts'],['ok','prueba creada y añadida al CI']],
+      a:'1 falla crítica: Pix devuelve 500 porque el QR se genera sin valor. Ya creé checkout_pix.spec.ts para que no vuelva.'}
+  };
+  const N = 1100, P = [];
+  for (let i = 0; i < N; i++) { const y = 1 - (i / (N - 1)) * 2, r = Math.sqrt(1 - y * y), th = i * 2.399963; P.push([Math.cos(th) * r, y, Math.sin(th) * r]); }
+  const CH = ' .·:-=+*#%@', C = 46, R = 26;
+  let state = 'idle', run = 0;
+  function draw(t) {
+    const ry = t * (state === 'think' ? .0016 : .0006), rx = .38, cy = Math.cos(ry), sy = Math.sin(ry), cx = Math.cos(rx), sx = Math.sin(rx);
+    const buf = new Array(C * R).fill(' '), zb = new Float32Array(C * R).fill(-9);
+    for (const [a, b, c] of P) {
+      let k = 1 + Math.sin(t * .0015) * .03;
+      if (state === 'think') k += Math.sin(b * 12 - t * .008) * .08;
+      if (state === 'speak') k += Math.sin(t * .02 + b * 3) * .07;
+      if (state === 'found') k += Math.sin(a * 9 + t * .02) * Math.cos(b * 7) * .07;
+      const px = a * k, py = b * k, pz = c * k, x2 = px * cy - pz * sy, z2 = px * sy + pz * cy, y2 = py * cx - z2 * sx, z3 = py * sx + z2 * cx;
+      const X = Math.round(C / 2 + x2 * 20), Y = Math.round(R / 2 + y2 * 12);
+      if (X < 0 || X >= C || Y < 0 || Y >= R) continue;
+      const i = Y * C + X, L = -z3; if (L > zb[i]) { zb[i] = L; buf[i] = CH[Math.max(1, Math.min(10, Math.round((L + 1) * 5)))]; }
+    }
+    let s = ''; for (let y = 0; y < R; y++) s += buf.slice(y * C, y * C + C).join('') + '\n';
+    core.textContent = s;
+  }
+  let last = 0;
+  (function loop(t) { if (el.offsetParent && t - last > 40) { last = t; draw(t); } requestAnimationFrame(loop); })(0);
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  const L = () => S[(typeof UI_LANG !== 'undefined' && S[UI_LANG]) ? UI_LANG : 'pt'];
+  const set = s => { state = s; el.classList.toggle('found', s === 'found'); stEl.textContent = L().st[s]; };
+  const esc = s => s.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+  async function type(node, text, ms, id) { for (let i = 1; i <= text.length; i++) { if (id !== run) return false; node.textContent = text.slice(0, i); await sleep(ms); } return true; }
+  async function play() {
+    const id = ++run, T = L();
+    log.innerHTML = ''; set('idle');
+    io.innerHTML = '<span class="p">voce@dark:~$</span> <span></span><span class="dt-cur"></span>';
+    await sleep(1200); if (id !== run) return;
+    if (!await type(io.children[1], T.u, 32, id)) return;
+    await sleep(500); set('think');
+    for (const [c, v] of T.steps) {
+      if (id !== run) return;
+      if (c === 'er') set('found');
+      const d = document.createElement('div'); d.className = c; d.textContent = '[' + new Date().toLocaleTimeString('pt-BR') + '] ' + v; log.append(d);
+      await sleep(620);
+    }
+    set('speak'); io.querySelector('.dt-cur').remove();
+    io.insertAdjacentHTML('beforeend', '<br><span class="p">dark&gt;</span> <span></span><span class="dt-cur"></span>');
+    const spans = io.querySelectorAll('span:not(.p):not(.dt-cur)');
+    if (!await type(spans[spans.length - 1], T.a, 20, id)) return;
+    set('idle'); await sleep(7000); if (id === run) play();
+  }
+  new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) play(); else run++; }), {threshold: .3}).observe(el);
+  document.querySelectorAll('#siteLang button').forEach(b => b.addEventListener('click', () => setTimeout(() => { if (el.offsetParent) play(); }, 50)));
 })();
 </script>
 </body>
